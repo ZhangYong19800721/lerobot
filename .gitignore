@@ -176,3 +176,4 @@ outputs/
 *.urdf
 *.xml
 *.part
+output_lerobot_train/*
