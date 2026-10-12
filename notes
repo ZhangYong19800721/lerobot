@@ -101,7 +101,7 @@ lerobot-train \
   --dataset.root="$HOME/.cache/huggingface/lerobot/ZhangYong/lerobot_dataset_a_20260921_164625" \
   --dataset.streaming=false \
   --policy.type=smolvla \
-  --output_dir=~/output_lerobot_train/grab/smolvla_from_scratch \
+  --output_dir=output_lerobot_train/grab/smolvla_from_scratch" \
   --job_name=test_job \
   --policy.device=cuda \
   --wandb.enable=false \
@@ -124,7 +124,7 @@ lerobot-rollout  \
   --duration=300 \
   --policy.path=/home/zy/workspace/lerobot/output_lerobot_train/a/checkpoints/last/pretrained_model
 
-## smolVLA 算法推理 
+## smolVLA 算法推理（模型微调后）
 lerobot-rollout \
   --strategy.type=base \
   --inference.type=rtc \
@@ -141,3 +141,19 @@ lerobot-rollout \
   --duration=300 \
   --rename_map='{"observation.images.side":"observation.images.camera1","observation.images.wrist":"observation.images.camera2"}' \
   --policy.empty_cameras=0
+
+## smolVLA 算法推理（从头训练后）
+lerobot-rollout \
+  --strategy.type=base \
+  --inference.type=rtc \
+  --inference.rtc.execution_horizon=10 \
+  --inference.rtc.max_guidance_weight=10.0 \
+  --robot.type=so101_follower \
+  --robot.port=/dev/ttyACM0 \
+  --robot.cameras='{"wrist": {"type": "opencv", "index_or_path": "/dev/video0", "width": 1280, "height": 720, "fps": 30, "fourcc": "MJPG"}, "side": {"type": "opencv", "index_or_path": "/dev/video2", "width": 1920, "height": 1080, "fps": 30, "fourcc": "MJPG"}}' \
+  --robot.id=zihao_follower_arm \
+  --policy.path=/home/zy/workspace/lerobot/output_lerobot_train/grab/smolvla_from_scratch/checkpoints/last/pretrained_model \
+  --device=cuda \
+  --display_data=false \
+  --task="TestTask" \
+  --duration=300
